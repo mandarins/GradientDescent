@@ -1,0 +1,57 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace GradientDescent
+{
+    public class Models
+    {
+        public Tensor LinearModel(Tensor xs, Tensor theta)
+        {
+            double w = theta[0];
+            double b = theta[1];
+            var result = new Tensor(xs.Length);
+            for (int i = 0; i < xs.Length; i++)
+                result[i] = w * xs[i] + b;
+            return result;
+        }
+
+        // Quadratic model: y = a * x^2 + b * x + c, theta = [a, b, c]
+        public Tensor QuadraticModel(Tensor xs, Tensor theta)
+        {
+            double a = theta[0];
+            double b = theta[1];
+            double c = theta[2];
+            var result = new Tensor(xs.Length);
+            for (int i = 0; i < xs.Length; i++)
+                result[i] = a * xs[i] * xs[i] + b * xs[i] + c;
+            return result;
+        }
+
+
+    }
+}
+
+
+/***** Quadratic sample
+ var xs = new Tensor(new double[] { -1.0, 0.0, 1.0, 2.0, 3.0 });
+var ys = new Tensor(new double[] { 2.55, 2.1, 4.35, 10.2, 18.25 });
+
+// Loss function
+var l2Loss = LossFunctions.L2Loss(QuadraticModel);
+var lossForData = l2Loss(xs, ys);
+
+// Initial theta
+var theta0 = new Tensor(new double[] { 0.0, 0.0, 0.0 });
+
+// Gradient descent
+var gd = new GradientDescent(alpha: 0.001, revs: 1000);
+var result = gd.Minimize(
+    objective: lossForData,
+    gradientOf: GradientDescent.NumericalGradient,
+    theta: theta0,
+    alpha: 0.001,
+    revs: 1000
+ * ***********/
