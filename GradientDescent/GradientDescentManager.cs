@@ -81,8 +81,14 @@ namespace GradientDescent
             return theta;
         }
 
-        // Numerical gradient (finite difference)
-        public static Tensor NumericalGradient(Func<Tensor, double> f, Tensor theta, double eps = 1e-6)
+        /// <summary>
+        /// Computes the delta (vector of partial derivatives) of a scalar function with respect to a Tensor parameter using finite differences.
+        /// </summary>
+        /// <param name="f">A function that takes a Tensor and returns a scalar double (e.g., a loss function).</param>
+        /// <param name="theta">The Tensor parameter at which to evaluate the gradient.</param>
+        /// <param name="eps">The small epsilon value used for finite difference approximation (default: 1e-6).</param>
+        /// <returns>A Tensor representing the gradient of f with respect to theta.</returns>
+        public static Tensor CalcutateDelta(Func<Tensor, double> f, Tensor theta, double eps = 1e-6)
         {
             var grad = new Tensor(theta.Length);
             for (int i = 0; i < theta.Length; i++)

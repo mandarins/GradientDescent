@@ -33,7 +33,7 @@ namespace GradientDescent
             // Fixed the issue by explicitly creating a lambda function to match the expected delegate type.
             var result = gdm.CalculateGradientDescent(
                 objective: lossForData,
-                gradientOf: (f, t) => GradientDescentManager.NumericalGradient(f, t), // Explicit lambda to match Func<Func<Tensor, double>, Tensor, Tensor>
+                gradientOf: (f, t) => GradientDescentManager.CalcutateDelta(f, t), // Explicit lambda to match Func<Func<Tensor, double>, Tensor, Tensor>
                 theta: theta0,
                 alpha: alpha,
                 revs: revsVal
@@ -59,7 +59,7 @@ namespace GradientDescent
             gdm = new GradientDescentManager(alpha: 0.001, revs: 1000);
             var q_result = gdm.CalculateGradientDescent(
                 objective: lossForData,
-                gradientOf: (f, t) => GradientDescentManager.NumericalGradient(f, t),
+                gradientOf: (f, t) => GradientDescentManager.CalcutateDelta(f, t),
                 theta: q_theta0,
                 alpha: 0.001,
                 revs: 1000
@@ -102,7 +102,7 @@ namespace GradientDescent
             gdm = new GradientDescentManager(alpha: 0.001, revs: 1000);
             var poly_result = gdm.CalculateGradientDescent(
                 objective: lossForData,
-                gradientOf: (f, t) => GradientDescentManager.NumericalGradient(f, t),
+                gradientOf: (f, t) => GradientDescentManager.CalcutateDelta(f, t),
                 theta: poly_theta0,
                 alpha: 0.001,
                 revs: 1000
