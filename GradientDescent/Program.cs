@@ -67,6 +67,50 @@ namespace GradientDescent
 
             PlotUtil.PlotFit(q_xs, q_ys, q_result, quadraticModel, "ResultingQuadraticPlot");
             Console.WriteLine("Quadratic Descent theta: " + result);
+
+
+            /****** POLY NOMIAL TEST *********/
+            // For a cubic / polynomial model(y ≈ x ^ 3 - x ^ 2 + 2x + 1)
+            //var poly_xs = new Tensor(new double[] { -2, -1, 0, 1, 2 });
+            //var poly_ys = new Tensor(new double[] { -9, -2, 1, 3, 11 });
+            double[] xVals = Enumerable.Range(0, 21).Select(i => -3.0 + i * 0.3).ToArray();
+            double[] yVals = xVals.Select(x => Math.Sin(x)).ToArray();
+
+            var poly_xs = new Tensor(xVals);
+            var poly_ys = new Tensor(yVals);
+            // Loss function
+            l2Loss = GradientDescentManager.L2Loss(models.PolynomialModel);
+            lossForData = l2Loss(poly_xs, poly_ys);
+
+
+            // For a cubic (degree 3) polynomial: y = a*x^3 + b*x^2 + c*x + d, theta = [d, c, b, a]
+            //var poly_theta0 = new Tensor(new double[] { 0.0, 0.0, 0.0, 0.0 }); // 4 coefficients, all start at 0
+            var poly_theta0 = new Tensor(new double[] { .01, .01, .01, .01 }); // 4 coefficients, all start at 0
+
+
+            Func<double, Tensor, double> polyPlotterModel = (x, t) =>
+            {
+                double y = 0;
+                for (int i = 0; i < t.Length; i++)
+                    y += t[i] * Math.Pow(x, i);
+                return y;
+            };
+
+            PlotUtil.PlotFit(poly_xs, poly_ys, poly_theta0, polyPlotterModel, "InitialPolyNomialPlotting");
+
+            // Gradient descent
+            gdm = new GradientDescentManager(alpha: 0.001, revs: 1000);
+            var poly_result = gdm.CalculateGradientDescent(
+                objective: lossForData,
+                gradientOf: (f, t) => GradientDescentManager.NumericalGradient(f, t),
+                theta: poly_theta0,
+                alpha: 0.001,
+                revs: 1000
+            );
+
+            PlotUtil.PlotFit(poly_xs, poly_ys, poly_result, polyPlotterModel, "ResultPolyNomialPlotting");
+
+
         }
     }
 }

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+// Models should be added in this class
 namespace GradientDescent
 {
     public class Models
@@ -30,6 +31,18 @@ namespace GradientDescent
             return result;
         }
 
+        public Tensor PolynomialModel(Tensor xs, Tensor theta)
+        {
+            var result = new Tensor(xs.Length);
+            for (int i = 0; i < xs.Length; i++)
+            {
+                double y = 0;
+                for (int j = 0; j < theta.Length; j++)
+                    y += theta[j] * Math.Pow(xs[i], j);
+                result[i] = y;
+            }
+            return result;
+        }
 
     }
 }
@@ -55,3 +68,9 @@ var result = gd.Minimize(
     alpha: 0.001,
     revs: 1000
  * ***********/
+
+/* * 
+For a cubic/polynomial model (y ≈ x^3 - x^2 + 2x + 1)
+var xsPoly = new Tensor(new double[] { -2, -1, 0, 1, 2 });
+var ysPoly = new Tensor(new double[] { -9, -2, 1, 3, 11 });
+**/
