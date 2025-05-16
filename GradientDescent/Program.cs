@@ -4,9 +4,24 @@ namespace GradientDescent
 {
     class Program
     {
+
+
+        private static readonly string LogFilePath = "gradientdescent.log";
+
+        public static void LogMessage(string message)
+        {
+            // Appends the message to the log file with a newline
+            File.AppendAllText(LogFilePath, message + Environment.NewLine);
+        }
+
         static void Main(string[] args)
         {
+            var pm = new Program();
+
             Console.WriteLine("Linear Model Test !");
+            Program.LogMessage("Linear Model Test !");
+
+
             double alpha = 0.01;
             int revsVal = 1000;
 
@@ -41,6 +56,7 @@ namespace GradientDescent
 
             PlotUtil.PlotFit(xs, ys, result, linearModel, "ResultingLine");
             Console.WriteLine("Linear Descent theta: " + result);
+            Program.LogMessage("Linear Descent theta: " + result);  
 
 
             var q_xs = new Tensor(new double[] { -1.0, 0.0, 1.0, 2.0, 3.0 });
@@ -53,7 +69,7 @@ namespace GradientDescent
             // Initial theta
             var q_theta0 = new Tensor(new double[] { 0.0, 0.0, 0.0 });
             Func<double, Tensor, double> quadraticModel = (x, t) => t[0] * x * x + t[1] * x + t[2];
-            
+
             PlotUtil.PlotFit(q_xs, q_ys, q_theta0, quadraticModel, "InitialQuadraticPlot");
             // Gradient descent
             gdm = new GradientDescentManager(alpha: 0.001, revs: 1000);
@@ -67,6 +83,7 @@ namespace GradientDescent
 
             PlotUtil.PlotFit(q_xs, q_ys, q_result, quadraticModel, "ResultingQuadraticPlot");
             Console.WriteLine("Quadratic Descent theta: " + result);
+            Program.LogMessage("Quadratic Descent theta: " + result);
 
 
             /****** POLY NOMIAL TEST *********/
@@ -109,8 +126,40 @@ namespace GradientDescent
             );
 
             PlotUtil.PlotFit(poly_xs, poly_ys, poly_result, polyPlotterModel, "ResultPolyNomialPlotting");
+            Program.LogMessage("Polynomial Descent theta: " + poly_result);
 
+            //******** TEST A PLANE MODEL *************
+            var xsPlane = new Tensor[]
+            {
+                new Tensor(new double[] { 1.0, 2.0 }),
+                new Tensor(new double[] { 2.0, 1.0 }),
+                new Tensor(new double[] { 3.0, 0.0 })
+            };
+            var ysPlane = new Tensor(new double[] { 5.0, 6.0, 7.0 }); // target outputs
+
+            // Initial theta: [w1, w2, b]
+            var thetaPlane0 = new Tensor(new double[] { 0.0, 0.0, 0.0 });
+
+            // Fix for CS1503: Adjust the lambda function to correctly handle the input type 'Tensor[]' for the PlaneModel.
+            var l2LossPlane = GradientDescentManager.L2LossForTensorArray(models.PlaneModel);
+            var lossForDataPlane = l2LossPlane(xsPlane, ysPlane);
+
+            // Gradient descent
+            var gdPlane = new GradientDescentManager(alpha: 0.001, revs: 1000);
+            var resultPlane = gdPlane.CalculateGradientDescent(
+                objective: lossForDataPlane, // <-- Use the correct loss function for the plane model
+                gradientOf: (f, t) => GradientDescentManager.CalcutateDelta(f, t),
+                theta: thetaPlane0,
+                alpha: 0.001,
+                revs: 1000
+            );
+
+            PlotUtil.PlotPlaneFit2DProjection(xsPlane, ysPlane, resultPlane, "PlaneModel2DProjection");
+            Console.WriteLine("Plane Descent theta: " + resultPlane);
+            Program.LogMessage("Plane Descent theta: " + resultPlane);
 
         }
+
+
     }
 }

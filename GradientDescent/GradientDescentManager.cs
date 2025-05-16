@@ -36,6 +36,22 @@ namespace GradientDescent
             };
         }
 
+        public static Func<Tensor[], Tensor, Func<Tensor, double>> L2LossForTensorArray(Func<Tensor[], Tensor, Tensor> model)
+        {
+            // Returns a function that takes theta and returns the L2 loss for the given xs and ys
+            return (xs, ys) => (theta) =>
+            {
+                var preds = model(xs, theta);
+                double sum = 0;
+                for (int i = 0; i < ys.Length; i++)
+                {
+                    double diff = preds[i] - ys[i];
+                    sum += diff * diff;
+                }
+                return sum / ys.Length;
+            };
+        }
+
         /// <summary>
         /// Performs gradient descent to minimize the given objective function.
         /// </summary>

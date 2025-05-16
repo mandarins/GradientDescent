@@ -40,5 +40,33 @@ namespace GradientDescent
             plt.SavePng(title + ".png", 400, 300);
         }
 
+        public static void PlotPlaneFit2DProjection(
+            Tensor[] xsPlane, Tensor ysPlane, Tensor theta, string title = "Plane Fit 2D Projection")
+        {
+            // Project x1 vs y for x2 = 0
+            double[] x1s = xsPlane.Select(t => t[0]).ToArray();
+            double[] x2s = xsPlane.Select(t => t[1]).ToArray();
+            double[] ys = ysPlane.Data;
+
+            // Fit line for x2 = 0
+            double x1Min = x1s.Min();
+            double x1Max = x1s.Max();
+            double[] x1Line = new double[] { x1Min, x1Max };
+            double[] yLine = x1Line.Select(x1 => theta[0] * x1 + theta[1] * 0 + theta[2]).ToArray();
+
+            var plt = new ScottPlot.Plot();
+
+            // Data points: x1 vs y, colored by x2
+            plt.Add.ScatterPoints(x1s, ys, color: Colors.Blue);
+
+            // Plane slice
+            plt.Add.ScatterPoints(x1Line, yLine, color: Colors.Red);
+
+            plt.Title(title);
+            plt.XLabel("x1 (x2=0)");
+            plt.YLabel("y");
+            plt.SavePng(title + ".png", 400, 300);
+        }
+
     }
 }
